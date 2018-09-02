@@ -124,6 +124,18 @@ class Blockchain{
       return getLevelDBData(blockHeight);
     }
 
+	// change the content of the data field for a specific block
+	// (for testing)
+	messWithData(blockHeight,data){
+		this.getBlock(blockHeight)
+		.then( (blockstring) => {
+			let block = JSON.parse(blockstring);
+			block.data = data;
+			addLevelDBData(blockHeight,JSON.stringify(block).toString());
+		})
+	}
+	
+	
     // validate block
     validateBlock(blockHeight){
 
