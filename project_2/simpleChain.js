@@ -70,38 +70,55 @@ class Block{
 
 class Blockchain{
   constructor(){
-    this.height = 0,
-    this.addBlock(new Block("First block in the chain - Genesis block"));
+	this.getBlockHeight().then( (height) => {
+		if ( height === 0 ){
+			this.addBlock(new Block("First block in the chain - Genesis block"));
+		}
+	})
   }
 
   // Add new block
   addBlock(newBlock){
 	  
-    // Block height
-    newBlock.height = this.getBlockHeight() + 1;
-	
-    // UTC timestamp
-    newBlock.time = new Date().getTime().toString().slice(0,-3);
-	
-    // previous block hash
-    if(newBlock.height > 1){
-		let key = newBlock.height - 1;
-		this.getBlock(key).then((prevblock) => {
-			newBlock.previousBlockHash = JSON.parse(prevblock).hash;
+	this.getBlockHeight().then( (height) => {
+		// Block height
+		newBlock.height = height;
+		
+		// UTC timestamp
+		newBlock.time = new Date().getTime().toString().slice(0,-3);
+		
+		// previous block hash
+		if(newBlock.height > 0){
+			let key = newBlock.height - 1;
+			this.getBlock(key).then((prevblock) => {
+				newBlock.previousBlockHash = JSON.parse(prevblock).hash;
+				newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
+				addLevelDBData(newBlock.height,JSON.stringify(newBlock).toString());
+			})
+		} else {
 			newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
 			addLevelDBData(newBlock.height,JSON.stringify(newBlock).toString());
-		})
-    } else {
-		newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
-		addLevelDBData(newBlock.height,JSON.stringify(newBlock).toString());
-	}
+		}
+	})
   }
 
   // Get block height
     getBlockHeight(){
-      return this.height;
+	  return new Promise ((resolve,reject) => {
+		let height = 0;
+		db.createReadStream({keys:true,values:false})
+		.on('data', () => { ++height } )
+		.on('error', (error) => {reject(error)})
+		.on('close', () => {resolve(height)})
+	  })
     }
 
+	// Display Block Height (for testing)
+	displayBlockHeight(){
+		this.getBlockHeight()
+		.then( (height) => {console.log(height)})
+	}
+	
     // get block
     getBlock(blockHeight){
       return getLevelDBData(blockHeight);
@@ -161,10 +178,18 @@ class Blockchain{
 		let promises = [];
 		
 		// Check hashes
-		for (var i = 1; i < this.height; i++){
-			promises.push(this.validateBlock(i));
-			promises.push(this.validateLink(i));
-		}
+		this.getBlockHeight().then( (height) => {
+			// height is the total number of blocks
+			// and keys start at 0
+			// so the last block has a key = height -1
+			for (var i = 0; i < height; i++){
+				promises.push(this.validateBlock(i));
+				// We cannot check the previous hash of the block after the last block
+				// ... since it is the last block !
+				if (i < (height -1)) promises.push(this.validateLink(i));
+			}
+		})
+
 		
 		Promise.all(promises)
 		.then( (results) => {console.log("The blockchain is valid")})
