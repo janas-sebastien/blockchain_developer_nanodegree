@@ -2,7 +2,7 @@
 *
 *	Submission for project 2: Private Blockchain
 *	Author: Sébastien Janas
-*	Date: 31/08/2018
+*	Date: 02/09/2018
 * 
 *	That file contains the leveldb functions (from levelSandbox.js)
 *	and the part related to the blockchain (from simpleChain.js)
@@ -76,26 +76,24 @@ class Blockchain{
 
   // Add new block
   addBlock(newBlock){
-
-	this.height++;
 	  
     // Block height
-    newBlock.height = this.height;
+    newBlock.height = this.getBlockHeight() + 1;
 	
     // UTC timestamp
     newBlock.time = new Date().getTime().toString().slice(0,-3);
 	
     // previous block hash
-    if(this.height>1){
-		let key = this.height - 1;
+    if(newBlock.height > 1){
+		let key = newBlock.height - 1;
 		this.getBlock(key).then((prevblock) => {
 			newBlock.previousBlockHash = JSON.parse(prevblock).hash;
 			newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
-			addLevelDBData(this.height,JSON.stringify(newBlock).toString());
+			addLevelDBData(newBlock.height,JSON.stringify(newBlock).toString());
 		})
     } else {
 		newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
-		addLevelDBData(this.height,JSON.stringify(newBlock).toString());
+		addLevelDBData(newBlock.height,JSON.stringify(newBlock).toString());
 	}
   }
 
