@@ -139,9 +139,9 @@ class Blockchain{
     // validate block
     validateBlock(blockHeight){
 
-	  return new Promise( (resolve,reject) => {
+		return new Promise( (resolve,reject) => {
 	  
-		  // get block object
+			// get block object
 			this.getBlock(blockHeight).then( (blockstring) => {
 				// Get block
 				let block = JSON.parse(blockstring);
@@ -158,54 +158,46 @@ class Blockchain{
 					console.log('Block #'+blockHeight+' invalid hash:\n'+blockHash+'<>'+validBlockHash);
 					reject(false);
 				}
-		  });
-		  
-		})
-    }
-
-	validateLink(blockHeight){
-		
-		return new Promise( (resolve,reject) => {
-			this.getBlock(blockHeight).then( (blockstring) => {
-				let block = JSON.parse(blockstring);
-				let blockHash = block.hash;
-				let nextblocknumber = blockHeight + 1;
-				this.getBlock(nextblocknumber).then( (nextblockstring) => {
-					let nextblock = JSON.parse(nextblockstring);
-					let previousHash = nextblock.previousBlockHash;			
-					if (blockHash!==previousHash) {
-						console.log('Block #'+blockHeight+' hash does not match the previous hash of block '+ nextblocknumber + '\n')
-						console.log(blockHash + '<>' + previousHash + '\n');
-						reject(false);
-					} else {
-						resolve(true)
-					}
-				})
-			})
+			}); 
 		})
 	}
 	
    // Validate blockchain
     validateChain(){
-		let promises = [];
-		
-		// Check hashes
-		this.getBlockHeight().then( (height) => {
-			// height is the total number of blocks
-			// and keys start at 0
-			// so the last block has a key = height -1
-			for (var i = 0; i < height; i++){
-				promises.push(this.validateBlock(i));
-				// We cannot check the previous hash of the block after the last block
-				// ... since it is the last block !
-				if (i < (height -1)) promises.push(this.validateLink(i));
+		let errorLog = [];
+		let chain = [];
+
+		db.createReadStream({keys:true,values:true})
+		.on('data', (block) => { 
+			chain.push(JSON.parse(block.value));
+		})
+		.on('close', () => {
+			for (var i = 0; i < chain.length; i++) {
+				let hash = chain[i].hash;
+				let block = chain[i];
+				block.hash = '';
+				let validBlockHash = SHA256(JSON.stringify(block)).toString();
+				if (validBlockHash !== hash){
+					console.log('Block #'+i+' invalid hash:\n')
+					console.log(hash+'<>'+validBlockHash+'\n');
+					errorLog.push(i);
+					continue;
+				}
+				if (i < chain.length - 1){
+					if (hash !== chain[i+1].previousBlockHash){
+						console.log('Block #'+i+' hash does not match the previous hash of next block.\n')
+						console.log(hash+'<>'+chain[i+1].previousBlockHash+'\n');
+						errorLog.push(i);
+					}
+				}
+			}
+			
+			if (errorLog.length>0) {
+				console.log('Block errors = ' + errorLog.length);
+				console.log('Blocks: '+errorLog);
+			} else {
+				console.log('No errors detected');
 			}
 		})
-
-		
-		Promise.all(promises)
-		.then( (results) => {console.log("The blockchain is valid")})
-		.catch( (error) => {console.log("The blockchain is invalid")})
-
     }
 }
