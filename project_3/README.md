@@ -8,7 +8,11 @@ You will need node.js to run that application.
 
 ### Installing
 
-Installing that package is as easy as copying the content of the directory on your system.
+Installing that package is as easy as copying the content of the directory on your system, and then run the follwing command to install project dependencies:
+
+```
+nmp install --save
+```
 
 ### Running the application
 
@@ -22,7 +26,7 @@ node app.js
 
 URL
 ```
-http://<hostname>:8000/block/[blockheight]
+http://localhost:8000/block/[blockheight]
 ```
 
 The REST API returns the content of block [blockheight], in JSON format.
@@ -31,7 +35,7 @@ The REST API returns the content of block [blockheight], in JSON format.
 
 URL
 ```
-http://<hostname>:8000/block/
+http://localhost:8000/block/
 ```
 
 The content of the block is provided in the parameter "block" of the POST request. If successful, the REST API returns the content of the block, in JSON format.
@@ -41,13 +45,13 @@ The content of the block is provided in the parameter "block" of the POST reques
 #### GET endpoint
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json"  http://<hostname>:8000/block/[blockheight]
+curl -v -H "Accept: application/json" -H "Content-type: application/json"  http://localhost:8000/block/[blockheight]
 ```
 
 #### POST endpoint
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -d '{"block":"block content"}' http://<hostname>:8000/block/
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -d '{"block":"block content"}' http://localhost:8000/block/
 ```
 
 ## Built With
