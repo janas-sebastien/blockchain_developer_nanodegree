@@ -10,12 +10,31 @@ You will need node.js to run that application.
 
 Installing that package is as easy as copying the content of the directory on your system.
 
-
 ### Running the application
 
 ```
 node app.js
 ```
+
+### Enpoints description
+
+#### GET endpoint
+
+URL
+```
+http://<hostname>:8000/block/[blockheight]
+```
+
+The REST API returns the content of block [blockheight], in JSON format.
+
+#### POST endpoint
+
+URL
+```
+http://<hostname>:8000/block/
+```
+
+The content of the block is provided in the parameter "block" of the POST request. If successful, the REST API returns the content of the block, in JSON format.
 
 ## Built With
 
@@ -25,5 +44,5 @@ node app.js
 
 ## Authors
 
-* **Sébastien JANAS** - [blockchain_developer_nanodegree](https://github.com/janas-sebastien/blockchain_developer_nanodegree)
+***Sébastien JANAS**
 
