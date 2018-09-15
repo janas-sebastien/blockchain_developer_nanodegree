@@ -36,6 +36,20 @@ http://<hostname>:8000/block/
 
 The content of the block is provided in the parameter "block" of the POST request. If successful, the REST API returns the content of the block, in JSON format.
 
+### Test endpoints with Curl
+
+#### GET endpoint
+
+```
+curl -v -H "Accept: application/json" -H "Content-type: application/json"  http://<hostname>:8000/block/[blockheight]
+```
+
+#### POST endpoint
+
+```
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -d '{"block":"block2"}' http://<hostname>:8000/block/
+```
+
 ## Built With
 
 * [Express](https://expressjs.com) - The web framework used
@@ -44,5 +58,5 @@ The content of the block is provided in the parameter "block" of the POST reques
 
 ## Authors
 
-***Sébastien JANAS**
+**Sébastien JANAS**
 
