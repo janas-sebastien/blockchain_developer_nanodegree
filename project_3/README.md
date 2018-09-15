@@ -25,11 +25,5 @@ node app.js
 
 ## Authors
 
-* **Sébastien JANAS** - *Initial work* - [blockchain_developer_nanodegree](https://github.com/janas-sebastien/blockchain_developer_nanodegree)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+* **Sébastien JANAS** - [blockchain_developer_nanodegree](https://github.com/janas-sebastien/blockchain_developer_nanodegree)
 
