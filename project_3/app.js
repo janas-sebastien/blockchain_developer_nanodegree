@@ -18,7 +18,7 @@ app.get('/block/:id', function(req, res){
 
 	bk.getBlock(height)
 	.catch( function(){
-		res.status(201).send("Block not found");
+		res.status(400).send("Block not found");
 	})
 	.then( function(block){
 		res.status(200).send(block);
@@ -33,7 +33,7 @@ app.post('/block/',function(req,res){
 		bk.addBlock(new Block(block));
 		res.status(200).send(block);
 	} else {
-		res.status(201).send("Cannot add empty block\n");
+		res.status(401).send("Cannot add empty block\n");
 	}
 });
 
