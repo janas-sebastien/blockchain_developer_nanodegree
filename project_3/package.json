@@ -1,0 +1,17 @@
+{
+  "name": "blockchain_rest_api",
+  "version": "1.0.0",
+  "description": "Project 3 of the blockchain developer nanodegree program",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sebastien JANAS",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.3",
+    "level": "^4.0.0"
+  }
+}
