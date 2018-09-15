@@ -47,7 +47,7 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json"  http:
 #### POST endpoint
 
 ```
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -d '{"block":"block2"}' http://<hostname>:8000/block/
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -d '{"block":"block content"}' http://<hostname>:8000/block/
 ```
 
 ## Built With
